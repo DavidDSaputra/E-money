@@ -64,5 +64,9 @@
             <action android:name="android.intent.action.VIEW"/>
             <data android:scheme="dompetkampus"/>
         </intent>
+        <intent>
+            <action android:name="android.intent.action.VIEW"/>
+            <data android:scheme="diecaststore"/>
+        </intent>
     </queries>
 </manifest>

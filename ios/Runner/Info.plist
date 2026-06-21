@@ -38,6 +38,7 @@
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>dompetkampus</string>
+		<string>diecaststore</string>
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
