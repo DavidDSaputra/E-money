@@ -4,7 +4,7 @@ class AppConstants {
 
   // API
   static const String baseUrl =
-      'http://192.168.0.7:8080'; // Android emulator → localhost
+      'http://127.0.0.1:8081'; // USB device via adb reverse → host localhost
   static const String apiVersion = '/v1';
   static const int connectTimeout = 30;
   static const int receiveTimeout = 30;
