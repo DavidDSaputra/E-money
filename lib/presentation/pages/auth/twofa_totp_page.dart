@@ -3,7 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import '../../../core/constants/app_constants.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../data/datasources/local/secure_storage_datasource.dart';
+import '../../../injection/injection_container.dart';
 import '../../blocs/auth/otp_bloc.dart';
 import '../../widgets/app_button.dart';
 import '../../widgets/code_input.dart';
@@ -56,10 +59,15 @@ class _TwoFATotpPageState extends State<TwoFATotpPage> {
   @override
   Widget build(BuildContext context) {
     return BlocListener<OtpBloc, OtpState>(
-      listener: (context, state) {
+      listener: (context, state) async {
         if (state is OtpTotpSetup) {
           setState(() => _step = 'scan');
         } else if (state is OtpTotpEnabled || state is OtpVerified) {
+          if (widget.mode == 'setup') {
+            await sl<SecureStorageDatasource>()
+                .save2faMethod(AppConstants.twoFaTotp);
+            if (!context.mounted) return;
+          }
           context.go('/home');
         } else if (state is OtpInvalid) {
           setState(() => _hasError = true);

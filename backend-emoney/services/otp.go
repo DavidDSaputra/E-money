@@ -15,6 +15,7 @@ import (
 
 	firebase "firebase.google.com/go/v4"
 	"firebase.google.com/go/v4/messaging"
+	otpLib "github.com/pquerna/otp"
 	"github.com/pquerna/otp/totp"
 	"github.com/redis/go-redis/v9"
 	"gorm.io/gorm"
@@ -181,7 +182,16 @@ func (s *OTPService) VerifyTOTP(ctx context.Context, user *models.User, code str
 		return false, fmt.Errorf("TOTP belum didaftarkan")
 	}
 
-	valid := totp.Validate(code, user.TOTPSecret)
+	valid, err := totp.ValidateCustom(code, user.TOTPSecret, time.Now().UTC(), totp.ValidateOpts{
+		Period:    30,
+		Skew:      1,
+		Digits:    otpLib.DigitsSix,
+		Algorithm: otpLib.AlgorithmSHA1,
+	})
+	if err != nil {
+		return false, err
+	}
+
 	if valid && !user.TOTPEnabled {
 		if err := s.db.WithContext(ctx).Model(user).Update("totp_enabled", true).Error; err != nil {
 			return false, err

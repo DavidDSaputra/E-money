@@ -2,7 +2,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import '../../../core/constants/app_constants.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../data/datasources/local/secure_storage_datasource.dart';
+import '../../../injection/injection_container.dart';
 import '../../blocs/auth/otp_bloc.dart';
 import '../../widgets/feature_icon.dart';
 
@@ -25,8 +28,13 @@ class _TwoFANotifPageState extends State<TwoFANotifPage> {
   @override
   Widget build(BuildContext context) {
     return BlocListener<OtpBloc, OtpState>(
-      listener: (context, state) {
+      listener: (context, state) async {
         if (state is OtpVerified) {
+          if (widget.mode == 'setup') {
+            await sl<SecureStorageDatasource>()
+                .save2faMethod(AppConstants.twoFaNotif);
+            if (!mounted) return;
+          }
           setState(() => _phase = 'approved');
           Future.delayed(const Duration(milliseconds: 900), () {
             if (!context.mounted) {

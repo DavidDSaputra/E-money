@@ -4,6 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/constants/app_constants.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../data/datasources/local/secure_storage_datasource.dart';
+import '../../../injection/injection_container.dart';
 import '../../blocs/auth/auth_bloc.dart';
 import '../../blocs/auth/otp_bloc.dart';
 import '../../widgets/code_input.dart';
@@ -62,9 +64,12 @@ class _TwoFASmtpPageState extends State<TwoFASmtpPage> {
   @override
   Widget build(BuildContext context) {
     return BlocListener<OtpBloc, OtpState>(
-      listener: (context, state) {
+      listener: (context, state) async {
         if (state is OtpVerified) {
           if (widget.mode == 'setup') {
+            await sl<SecureStorageDatasource>()
+                .save2faMethod(AppConstants.twoFaSmtp);
+            if (!context.mounted) return;
             context.go('/home');
           } else {
             context.read<AuthBloc>().add(AuthCheckRequested());
