@@ -3,10 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'core/router/app_router.dart';
+import 'core/services/deeplink_service.dart';
 import 'core/theme/app_theme.dart';
 import 'core/utils/app_bloc_observer.dart';
 import 'firebase_options.dart';
 import 'injection/injection_container.dart' as di;
+
+late final DeeplinkService _deeplinkService;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,6 +34,9 @@ void main() async {
     statusBarColor: Colors.transparent,
     statusBarIconBrightness: Brightness.dark,
   ));
+
+  _deeplinkService = DeeplinkService(AppRouter.router);
+  await _deeplinkService.init();
 
   runApp(const DompetKampusApp());
 }
