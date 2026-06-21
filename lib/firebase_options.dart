@@ -17,10 +17,7 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      throw UnsupportedError(
-        'DefaultFirebaseOptions have not been configured for web - '
-        'you can reconfigure this by running the FlutterFire CLI again.',
-      );
+      return web;
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -28,15 +25,9 @@ class DefaultFirebaseOptions {
       case TargetPlatform.iOS:
         return ios;
       case TargetPlatform.macOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for macos - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return macos;
       case TargetPlatform.windows:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for windows - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return windows;
       case TargetPlatform.linux:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for linux - '
@@ -50,19 +41,50 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyCWAzGMTyg1uSspi1qfno71sj4iCfp7qGk',
-    appId: '1:948878883710:android:516b94bdc2276b68a0512f',
-    messagingSenderId: '948878883710',
-    projectId: 'fir-emoney-e9256',
-    storageBucket: 'fir-emoney-e9256.firebasestorage.app',
+    apiKey: 'AIzaSyAMtrNX2g5_HMwdF9qw5aG9xugSJtt-cPc',
+    appId: '1:977471826811:android:18347dbb5484d46fb3ebde',
+    messagingSenderId: '977471826811',
+    projectId: 'globalwallet-emoney',
+    storageBucket: 'globalwallet-emoney.firebasestorage.app',
+  );
+  static const FirebaseOptions ios = FirebaseOptions(
+    apiKey: 'AIzaSyAsW5f7lsmkHL9OXtLs8hKqnQvUZ4bfVd8',
+    appId: '1:977471826811:ios:b68522d2a034d07db3ebde',
+    messagingSenderId: '977471826811',
+    projectId: 'globalwallet-emoney',
+    storageBucket: 'globalwallet-emoney.firebasestorage.app',
+    androidClientId: '977471826811-n7p37ja7k3p2q7eo743ia823lg9tj7eu.apps.googleusercontent.com',
+    iosClientId: '977471826811-mbfdociegkh9oonaj06ilepum2vpj7r7.apps.googleusercontent.com',
+    iosBundleId: 'com.example.globalwallet',
+  );
+  static const FirebaseOptions web = FirebaseOptions(
+    apiKey: 'AIzaSyAjBhIbz2yKjkgnhmuu-ZFQcpb7kdNtxsk',
+    appId: '1:977471826811:web:92883504d7711276b3ebde',
+    messagingSenderId: '977471826811',
+    projectId: 'globalwallet-emoney',
+    authDomain: 'globalwallet-emoney.firebaseapp.com',
+    storageBucket: 'globalwallet-emoney.firebasestorage.app',
+    measurementId: 'G-W27DMX6Q9Y',
   );
 
-  static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyA46uBUvmVQKsSL7HIXZG58MD9jXQCFX7c',
-    appId: '1:948878883710:ios:5363ad2b9fbe06b2a0512f',
-    messagingSenderId: '948878883710',
-    projectId: 'fir-emoney-e9256',
-    storageBucket: 'fir-emoney-e9256.firebasestorage.app',
-    iosBundleId: 'com.kampus.dompetKampusGlobal',
+  static const FirebaseOptions macos = FirebaseOptions(
+    apiKey: 'AIzaSyAsW5f7lsmkHL9OXtLs8hKqnQvUZ4bfVd8',
+    appId: '1:977471826811:ios:b68522d2a034d07db3ebde',
+    messagingSenderId: '977471826811',
+    projectId: 'globalwallet-emoney',
+    storageBucket: 'globalwallet-emoney.firebasestorage.app',
+    androidClientId: '977471826811-n7p37ja7k3p2q7eo743ia823lg9tj7eu.apps.googleusercontent.com',
+    iosClientId: '977471826811-mbfdociegkh9oonaj06ilepum2vpj7r7.apps.googleusercontent.com',
+    iosBundleId: 'com.example.globalwallet',
+  );
+
+  static const FirebaseOptions windows = FirebaseOptions(
+    apiKey: 'AIzaSyAjBhIbz2yKjkgnhmuu-ZFQcpb7kdNtxsk',
+    appId: '1:977471826811:web:a9e8bfc22c62d843b3ebde',
+    messagingSenderId: '977471826811',
+    projectId: 'globalwallet-emoney',
+    authDomain: 'globalwallet-emoney.firebaseapp.com',
+    storageBucket: 'globalwallet-emoney.firebasestorage.app',
+    measurementId: 'G-WGCKF86Q26',
   );
 }

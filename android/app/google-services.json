@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "977471826811",
+    "project_id": "globalwallet-emoney",
+    "storage_bucket": "globalwallet-emoney.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:977471826811:android:18347dbb5484d46fb3ebde",
+        "android_client_info": {
+          "package_name": "com.example.globalwallet"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "977471826811-n7p37ja7k3p2q7eo743ia823lg9tj7eu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.globalwallet",
+            "certificate_hash": "898b6b3b7f0708d2b67f6150523ae79c32c6f06e"
+          }
+        },
+        {
+          "client_id": "977471826811-62nlf2mqom4en4rtpui87igt76rb8hcn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAMtrNX2g5_HMwdF9qw5aG9xugSJtt-cPc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "977471826811-62nlf2mqom4en4rtpui87igt76rb8hcn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
