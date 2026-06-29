@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"context"
+	"log"
 	"net/http"
 	"time"
 
@@ -57,10 +58,12 @@ func (h *AuthHandler) VerifyToken(c *gin.Context) {
 
 	token, err := authClient.VerifyIDToken(ctx, req.FirebaseToken)
 	if err != nil {
+		log.Printf("VerifyIDToken failed on /v1/auth/verify-token: %v", err)
 		c.JSON(http.StatusUnauthorized, gin.H{
 			"success":    false,
 			"message":    "Token tidak valid atau kadaluarsa",
 			"error_code": "INVALID_FIREBASE_TOKEN",
+			"detail":     err.Error(),
 		})
 		return
 	}
@@ -236,10 +239,12 @@ func (h *AuthHandler) RegisterWithOTP(c *gin.Context) {
 
 	token, err := authClient.VerifyIDToken(ctx, req.FirebaseToken)
 	if err != nil {
+		log.Printf("VerifyIDToken failed on /v1/auth/register: %v", err)
 		c.JSON(http.StatusUnauthorized, gin.H{
 			"success":    false,
 			"message":    "Token Firebase tidak valid atau kadaluarsa",
 			"error_code": "INVALID_FIREBASE_TOKEN",
+			"detail":     err.Error(),
 		})
 		return
 	}

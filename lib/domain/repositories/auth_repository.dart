@@ -1,7 +1,8 @@
 import '../entities/user_entity.dart';
 
 abstract class AuthRepository {
-  Future<({UserEntity user, String token})> verifyFirebaseToken(
+  Future<({UserEntity user, String token, bool requiresEmailVerification})>
+      verifyFirebaseToken(
       String firebaseToken);
   Future<({UserEntity user, String token})> registerWithOtp(
       String firebaseToken);

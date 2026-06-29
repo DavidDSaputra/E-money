@@ -2,7 +2,13 @@ class ServerException implements Exception {
   final String message;
   final String? errorCode;
   final int? statusCode;
-  const ServerException(this.message, {this.errorCode, this.statusCode});
+  final Map<String, dynamic>? data;
+  const ServerException(
+    this.message, {
+    this.errorCode,
+    this.statusCode,
+    this.data,
+  });
 }
 
 class NetworkException implements Exception {

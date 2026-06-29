@@ -1,10 +1,15 @@
 class AppConstants {
   static const String appName = 'Dompet Kampus Global';
   static const String appVersion = '1.0.0';
+  static const String _physicalDeviceBaseUrl = 'http://192.168.110.79:8081';
 
   // API
-  static const String baseUrl =
-      'http://127.0.0.1:8081'; // USB device via adb reverse → host localhost
+  static String get baseUrl {
+    const override = String.fromEnvironment('API_BASE_URL');
+    if (override.isNotEmpty) return override;
+
+    return _physicalDeviceBaseUrl;
+  }
   static const String apiVersion = '/v1';
   static const int connectTimeout = 30;
   static const int receiveTimeout = 30;

@@ -58,6 +58,15 @@ class AuthNeedsVerification extends AuthState {
   List<Object?> get props => [user, token];
 }
 
+class AuthEmailVerificationRequired extends AuthState {
+  final UserEntity user;
+  final String token;
+  final String message;
+  AuthEmailVerificationRequired(this.user, this.token, this.message);
+  @override
+  List<Object?> get props => [user, token, message];
+}
+
 class AuthError extends AuthState {
   final String message;
   AuthError(this.message);
@@ -67,6 +76,7 @@ class AuthError extends AuthState {
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final VerifyFirebaseTokenUsecase _verifyToken;
+  final GetMeUsecase _getMe;
   final LogoutUsecase _logout;
   final AuthRepository _authRepo;
 
@@ -76,6 +86,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     required LogoutUsecase logout,
     required AuthRepository authRepo,
   })  : _verifyToken = verifyToken,
+        _getMe = getMe,
         _logout = logout,
         _authRepo = authRepo,
         super(AuthInitial()) {
@@ -107,7 +118,17 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(AuthUnauthenticated());
       return;
     }
-    emit(AuthAuthenticated(user));
+
+    try {
+      final remoteUser = await _getMe();
+      emit(AuthAuthenticated(remoteUser));
+    } on Failure {
+      await _authRepo.logout();
+      emit(AuthUnauthenticated());
+    } catch (_) {
+      await _authRepo.logout();
+      emit(AuthUnauthenticated());
+    }
   }
 
   Future<void> _onLoginWithFirebase(
@@ -115,6 +136,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(AuthLoading());
     try {
       final result = await _verifyToken(event.firebaseToken);
+      if (result.requiresEmailVerification) {
+        emit(AuthEmailVerificationRequired(
+          result.user,
+          result.token,
+          'Email belum diverifikasi. Silakan masukkan kode OTP email.',
+        ));
+        return;
+      }
       emit(AuthNeedsVerification(result.user, result.token));
     } on AuthFailure catch (e) {
       emit(AuthError(e.message));

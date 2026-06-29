@@ -1,9 +1,11 @@
 import '../../../core/constants/api_endpoints.dart';
+import '../../../core/error/exceptions.dart';
 import '../../../core/network/api_client.dart';
 import '../../models/user_model.dart';
 
 abstract class AuthRemoteDatasource {
-  Future<({UserModel user, String token})> verifyFirebaseToken(
+  Future<({UserModel user, String token, bool requiresEmailVerification})>
+      verifyFirebaseToken(
       String firebaseToken);
   Future<({UserModel user, String token})> registerWithOtp(
       String firebaseToken);
@@ -19,17 +21,34 @@ class AuthRemoteDatasourceImpl implements AuthRemoteDatasource {
   AuthRemoteDatasourceImpl(this._client);
 
   @override
-  Future<({UserModel user, String token})> verifyFirebaseToken(
-      String firebaseToken) async {
-    final response = await _client.post(
-      ApiEndpoints.verifyToken,
-      data: {'firebase_token': firebaseToken},
-    );
-    final data = response['data'] as Map<String, dynamic>;
-    final token = data['access_token'] as String;
-    final user = UserModel.fromJson(data['user'] as Map<String, dynamic>);
-    _client.setAuthToken(token);
-    return (user: user, token: token);
+  Future<({UserModel user, String token, bool requiresEmailVerification})>
+      verifyFirebaseToken(String firebaseToken) async {
+    try {
+      final response = await _client.post(
+        ApiEndpoints.verifyToken,
+        data: {'firebase_token': firebaseToken},
+      );
+      final data = response['data'] as Map<String, dynamic>;
+      final token = data['access_token'] as String;
+      final user = UserModel.fromJson(data['user'] as Map<String, dynamic>);
+      _client.setAuthToken(token);
+      return (
+        user: user,
+        token: token,
+        requiresEmailVerification: false,
+      );
+    } on ServerException catch (e) {
+      if (e.errorCode != 'EMAIL_NOT_VERIFIED' || e.data == null) rethrow;
+
+      final token = e.data!['access_token'] as String;
+      final user = UserModel.fromJson(e.data!['user'] as Map<String, dynamic>);
+      _client.setAuthToken(token);
+      return (
+        user: user,
+        token: token,
+        requiresEmailVerification: true,
+      );
+    }
   }
 
   @override

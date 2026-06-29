@@ -36,9 +36,11 @@ class _RegisterPageState extends State<RegisterPage> {
         password: _pw,
       );
       await credential.user?.updateDisplayName(_name);
+      await credential.user?.reload();
 
       // 2. Ambil Firebase ID Token lalu kirim ke backend
-      final idToken = await credential.user?.getIdToken();
+      final refreshedUser = FirebaseAuth.instance.currentUser;
+      final idToken = await refreshedUser?.getIdToken(true);
       if (idToken == null) throw Exception('Gagal mendapatkan token Firebase');
 
       await sl<RegisterWithOtpUsecase>()(idToken);

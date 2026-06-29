@@ -55,7 +55,9 @@ class _LoginPageState extends State<LoginPage> {
       debugPrint(
           '[Auth] Firebase sign-in OK → uid=${userCredential.user?.uid}');
 
-      final idToken = await userCredential.user?.getIdToken();
+      await userCredential.user?.reload();
+      final refreshedUser = FirebaseAuth.instance.currentUser;
+      final idToken = await refreshedUser?.getIdToken(true);
       debugPrint(
           '[Auth] Firebase ID token: ${idToken != null ? "OK (${idToken.length} chars)" : "NULL"}');
 
@@ -83,7 +85,9 @@ class _LoginPageState extends State<LoginPage> {
         email: _email,
         password: _pw,
       );
-      final idToken = await userCredential.user?.getIdToken();
+      await userCredential.user?.reload();
+      final refreshedUser = FirebaseAuth.instance.currentUser;
+      final idToken = await refreshedUser?.getIdToken(true);
       if (idToken != null && mounted) {
         context.read<AuthBloc>().add(AuthLoginWithFirebase(idToken));
       }
@@ -100,7 +104,9 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
-        if (state is AuthNeedsVerification) {
+        if (state is AuthEmailVerificationRequired) {
+          context.go('/verify-email');
+        } else if (state is AuthNeedsVerification) {
           context.go('/2fa/smtp');
         } else if (state is AuthAuthenticated) {
           context.go('/home');

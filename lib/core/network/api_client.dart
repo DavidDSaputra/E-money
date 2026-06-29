@@ -80,6 +80,7 @@ class ApiClient {
     if (data['success'] == false) {
       final errorCode = data['error_code'] as String?;
       final message = data['message'] as String? ?? 'Terjadi kesalahan.';
+      final payload = data['data'] as Map<String, dynamic>?;
 
       if (response.statusCode == 401) {
         if (errorCode == 'INVALID_OTP' || errorCode == 'INVALID_TOTP') {
@@ -88,7 +89,7 @@ class ApiClient {
         throw UnauthorizedException(message, errorCode: errorCode);
       }
       if (errorCode == 'INSUFFICIENT_BALANCE') {
-        final d = data['data'] as Map<String, dynamic>?;
+        final d = payload;
         throw InsufficientBalanceException(
           message,
           balance: (d?['balance'] as num?)?.toDouble(),
@@ -96,7 +97,9 @@ class ApiClient {
         );
       }
       throw ServerException(message,
-          errorCode: errorCode, statusCode: response.statusCode);
+          errorCode: errorCode,
+          statusCode: response.statusCode,
+          data: payload);
     }
     return data;
   }
@@ -127,8 +130,9 @@ class ApiClient {
           }
           return UnauthorizedException(message, errorCode: errorCode);
         }
+        final payload = data['data'] as Map<String, dynamic>?;
         return ServerException(message,
-            errorCode: errorCode, statusCode: status);
+            errorCode: errorCode, statusCode: status, data: payload);
       } catch (_) {
         return ServerException('Terjadi kesalahan server.',
             statusCode: e.response?.statusCode);

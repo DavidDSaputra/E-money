@@ -13,14 +13,19 @@ class AuthRepositoryImpl implements AuthRepository {
   AuthRepositoryImpl(this._remote, this._local);
 
   @override
-  Future<({UserEntity user, String token})> verifyFirebaseToken(
+  Future<({UserEntity user, String token, bool requiresEmailVerification})>
+      verifyFirebaseToken(
       String firebaseToken) async {
     try {
       final result = await _remote.verifyFirebaseToken(firebaseToken);
       await _local.saveToken(result.token);
       await _local.saveUserJson(result.user.toJsonString());
       await _local.saveAuthVerified(false);
-      return (user: result.user, token: result.token);
+      return (
+        user: result.user,
+        token: result.token,
+        requiresEmailVerification: result.requiresEmailVerification,
+      );
     } on UnauthorizedException catch (e) {
       throw AuthFailure(e.message, errorCode: e.errorCode);
     } on ServerException catch (e) {
