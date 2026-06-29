@@ -9,7 +9,7 @@ class AppTopBar extends StatelessWidget implements PreferredSizeWidget {
   const AppTopBar({super.key, required this.title, this.onBack, this.actions});
 
   @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight + 8);
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight + 4);
 
   @override
   Widget build(BuildContext context) {
@@ -17,10 +17,22 @@ class AppTopBar extends StatelessWidget implements PreferredSizeWidget {
       backgroundColor: Colors.white,
       elevation: 0,
       scrolledUnderElevation: 0,
+      surfaceTintColor: Colors.transparent,
       leading: onBack != null
           ? IconButton(
-              icon: const Icon(Icons.arrow_back_ios_new_rounded,
-                  size: 20, color: AppColors.ink),
+              icon: Container(
+                width: 36,
+                height: 36,
+                decoration: BoxDecoration(
+                  color: AppColors.bg,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: const Icon(
+                  Icons.arrow_back_ios_new_rounded,
+                  size: 17,
+                  color: AppColors.ink,
+                ),
+              ),
               onPressed: onBack,
             )
           : null,
@@ -28,9 +40,10 @@ class AppTopBar extends StatelessWidget implements PreferredSizeWidget {
         title,
         style: const TextStyle(
           fontFamily: 'PlusJakartaSans',
-          fontSize: 17,
+          fontSize: 16,
           fontWeight: FontWeight.w700,
           color: AppColors.ink,
+          letterSpacing: -0.2,
         ),
       ),
       centerTitle: true,

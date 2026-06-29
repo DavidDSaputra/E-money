@@ -15,7 +15,7 @@ enum AppButtonVariant {
 
 enum AppButtonSize { lg, md, sm }
 
-class AppButton extends StatelessWidget {
+class AppButton extends StatefulWidget {
   final String label;
   final VoidCallback? onPressed;
   final AppButtonVariant variant;
@@ -36,63 +36,80 @@ class AppButton extends StatelessWidget {
   });
 
   @override
+  State<AppButton> createState() => _AppButtonState();
+}
+
+class _AppButtonState extends State<AppButton> {
+  bool _pressed = false;
+
+  @override
   Widget build(BuildContext context) {
-    final (height, fontSize, radius, px) = switch (size) {
-      AppButtonSize.lg => (54.0, 16.0, 16.0, 20.0),
-      AppButtonSize.md => (46.0, 15.0, 14.0, 16.0),
-      AppButtonSize.sm => (38.0, 13.5, 11.0, 13.0),
+    final (height, fontSize, radius, px) = switch (widget.size) {
+      AppButtonSize.lg => (54.0, 15.5, 16.0, 20.0),
+      AppButtonSize.md => (46.0, 14.5, 14.0, 16.0),
+      AppButtonSize.sm => (38.0, 13.0, 11.0, 13.0),
     };
 
     final (bg, fg, shadow, border) = _resolveStyle();
-    final disabled = onPressed == null;
+    final disabled = widget.onPressed == null;
 
     return Opacity(
-      opacity: disabled ? 0.5 : 1.0,
+      opacity: disabled ? 0.45 : 1.0,
       child: GestureDetector(
-        onTap: disabled || isLoading ? null : onPressed,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 120),
-          height: height,
-          width: fullWidth ? double.infinity : null,
-          padding: EdgeInsets.symmetric(horizontal: px),
-          decoration: BoxDecoration(
-            gradient: variant == AppButtonVariant.primary
-                ? AppColors.primaryGradient
-                : null,
-            color: variant != AppButtonVariant.primary ? bg : null,
-            borderRadius: BorderRadius.circular(radius),
-            boxShadow: shadow,
-            border: border,
-          ),
-          child: Row(
-            mainAxisSize: fullWidth ? MainAxisSize.max : MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              if (isLoading) ...[
-                SizedBox(
-                  width: 20,
-                  height: 20,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2.4,
-                    valueColor: AlwaysStoppedAnimation(fg),
+        onTapDown: disabled || widget.isLoading
+            ? null
+            : (_) => setState(() => _pressed = true),
+        onTapUp: disabled || widget.isLoading
+            ? null
+            : (_) {
+                setState(() => _pressed = false);
+                widget.onPressed?.call();
+              },
+        onTapCancel: () => setState(() => _pressed = false),
+        child: AnimatedScale(
+          scale: _pressed ? 0.97 : 1.0,
+          duration: const Duration(milliseconds: 100),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 120),
+            height: height,
+            width: widget.fullWidth ? double.infinity : null,
+            padding: EdgeInsets.symmetric(horizontal: px),
+            decoration: BoxDecoration(
+              color: bg,
+              borderRadius: BorderRadius.circular(radius),
+              boxShadow: _pressed ? [] : shadow,
+              border: border,
+            ),
+            child: Row(
+              mainAxisSize: widget.fullWidth ? MainAxisSize.max : MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                if (widget.isLoading) ...[
+                  SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2.2,
+                      valueColor: AlwaysStoppedAnimation(fg),
+                    ),
+                  ),
+                  const SizedBox(width: 9),
+                ] else if (widget.icon != null) ...[
+                  widget.icon!,
+                  const SizedBox(width: 9),
+                ],
+                Text(
+                  widget.label,
+                  style: TextStyle(
+                    fontFamily: 'PlusJakartaSans',
+                    fontSize: fontSize,
+                    fontWeight: FontWeight.w700,
+                    color: fg,
+                    letterSpacing: 0.1,
                   ),
                 ),
-                const SizedBox(width: 9),
-              ] else if (icon != null) ...[
-                icon!,
-                const SizedBox(width: 9),
               ],
-              Text(
-                label,
-                style: TextStyle(
-                  fontFamily: 'PlusJakartaSans',
-                  fontSize: fontSize,
-                  fontWeight: FontWeight.w700,
-                  color: fg,
-                  letterSpacing: 0.1,
-                ),
-              ),
-            ],
+            ),
           ),
         ),
       ),
@@ -100,7 +117,7 @@ class AppButton extends StatelessWidget {
   }
 
   (Color, Color, List<BoxShadow>, Border?) _resolveStyle() {
-    return switch (variant) {
+    return switch (widget.variant) {
       AppButtonVariant.primary => (
           AppColors.primary,
           Colors.white,
@@ -112,13 +129,13 @@ class AppButton extends StatelessWidget {
           AppColors.primarySurface,
           AppColors.primary,
           [],
-          null
+          null,
         ),
       AppButtonVariant.ghost => (
           Colors.transparent,
           AppColors.slate600,
           [],
-          null
+          null,
         ),
       AppButtonVariant.outline => (
           Colors.white,
@@ -137,9 +154,9 @@ class AppButton extends StatelessWidget {
           AppColors.primary,
           [
             BoxShadow(
-                color: Colors.black.withValues(alpha: 0.14),
+                color: Colors.black.withValues(alpha: 0.12),
                 blurRadius: 20,
-                offset: const Offset(0, 8))
+                offset: const Offset(0, 6))
           ],
           null,
         ),

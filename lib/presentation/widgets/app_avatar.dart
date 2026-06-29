@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../core/theme/app_colors.dart';
 
 class AppAvatar extends StatelessWidget {
   final String name;
@@ -17,12 +18,12 @@ class AppAvatar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final palette = [
-      const Color(0xFF0B63E5),
-      const Color(0xFF16A571),
-      const Color(0xFF7A5AF8),
-      const Color(0xFFF5A623),
-      const Color(0xFFE5484D),
-      const Color(0xFF0EA5E9),
+      AppColors.primary,
+      AppColors.primaryLight,
+      AppColors.primaryDark,
+      AppColors.violet,
+      AppColors.amber,
+      AppColors.green,
     ];
     final auto =
         palette[(name.isNotEmpty ? name.codeUnitAt(0) : 0) % palette.length];
