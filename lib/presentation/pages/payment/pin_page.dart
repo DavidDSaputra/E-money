@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -142,6 +143,40 @@ class _PinPageState extends State<PinPage> {
     }
   }
 
+  // Panggil webhook diecast backend langsung setelah transfer berhasil.
+  // Best-effort: error diabaikan agar tidak mengganggu alur pembayaran.
+  Future<void> _callDiecastWebhook({
+    required String callbackUrl,
+    String? reference,
+    required int transactionId,
+  }) async {
+    try {
+      final orderId = Uri.parse(callbackUrl).queryParameters['order_id'];
+      if (orderId == null || orderId.isEmpty) return;
+
+      final dio = Dio(BaseOptions(
+        connectTimeout: const Duration(seconds: 8),
+        receiveTimeout: const Duration(seconds: 8),
+      ));
+
+      await dio.post(
+        'http://192.168.110.79:8082/v1/webhook/payment-confirm',
+        data: {
+          'order_id': int.tryParse(orderId) ?? 0,
+          'status': 'success',
+          'reference': reference ?? '',
+          'transaction_id': 'TXN$transactionId',
+        },
+        options: Options(
+          headers: {'X-Webhook-Secret': 'diecast-webhook-2024'},
+        ),
+      );
+      debugPrint('[DiecastWebhook] Order $orderId dikonfirmasi via server call');
+    } catch (e) {
+      debugPrint('[DiecastWebhook] Gagal (best-effort, diabaikan): $e');
+    }
+  }
+
   // Step 2: kode OTP/TOTP lengkap → kirim ke endpoint transfer/pembayaran.
   void _submitPayment(String code) {
     setState(() => _busy = true);
@@ -162,7 +197,6 @@ class _PinPageState extends State<PinPage> {
           listener: (context, state) {
             if (state is PaymentTransferSuccess) {
               final result = state.result;
-              // Kirim callback sukses ke app merchant (fire-and-forget, best-effort).
               final cb = _callbackUrl;
               if (cb != null) {
                 DeeplinkCallbackService.notifySuccess(
@@ -170,29 +204,45 @@ class _PinPageState extends State<PinPage> {
                   reference: _callbackReference,
                   transactionId: result.transactionId,
                 );
+                _callDiecastWebhook(
+                  callbackUrl: cb,
+                  reference: _callbackReference,
+                  transactionId: result.transactionId,
+                );
               }
-              context.go('/success', extra: {
-                'title': 'Pembayaran berhasil',
-                'subtitle': result.description,
-                'amount': result.amount,
-                'lines': [
-                  ['Jumlah', CurrencyFormatter.format(result.amount)],
-                  [
-                    'Saldo setelah',
-                    CurrencyFormatter.format(result.balanceAfter)
-                  ],
-                  ['Ref', 'DKG${result.transactionId}'],
-                ],
+              // Defer navigation agar tidak tabrakan dengan build cycle BLoC
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (mounted) {
+                  context.go('/success', extra: {
+                    'title': 'Pembayaran berhasil',
+                    'subtitle': result.description,
+                    'amount': result.amount,
+                    'lines': [
+                      ['Jumlah', CurrencyFormatter.format(result.amount)],
+                      [
+                        'Saldo setelah',
+                        CurrencyFormatter.format(result.balanceAfter)
+                      ],
+                      ['Ref', 'DKG${result.transactionId}'],
+                    ],
+                  });
+                }
               });
             } else if (state is PaymentTopupSuccess) {
-              context.go('/success', extra: {
-                'title': 'Top up berhasil',
-                'subtitle': 'Saldo kamu bertambah',
-                'amount': state.amount,
-                'lines': [
-                  ['Jumlah', CurrencyFormatter.format(state.amount)],
-                  ['Saldo sekarang', CurrencyFormatter.format(state.balance)],
-                ],
+              final amount = state.amount;
+              final balance = state.balance;
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (mounted) {
+                  context.go('/success', extra: {
+                    'title': 'Top up berhasil',
+                    'subtitle': 'Saldo kamu bertambah',
+                    'amount': amount,
+                    'lines': [
+                      ['Jumlah', CurrencyFormatter.format(amount)],
+                      ['Saldo sekarang', CurrencyFormatter.format(balance)],
+                    ],
+                  });
+                }
               });
             } else if (state is PaymentInvalidOtp) {
               setState(() {

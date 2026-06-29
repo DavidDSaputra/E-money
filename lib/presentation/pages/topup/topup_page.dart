@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_colors.dart';
@@ -17,6 +18,13 @@ class TopUpPage extends StatefulWidget {
 class _TopUpPageState extends State<TopUpPage> {
   double _amount = 100000;
   String _method = 'bca';
+  final _customController = TextEditingController(text: '100000');
+
+  @override
+  void dispose() {
+    _customController.dispose();
+    super.dispose();
+  }
 
   final _chips = [50000.0, 100000.0, 200000.0, 500000.0, 1000000.0];
   final _methods = [
@@ -45,14 +53,21 @@ class _TopUpPageState extends State<TopUpPage> {
     return BlocListener<PaymentBloc, PaymentState>(
       listener: (context, state) {
         if (state is PaymentTopupSuccess) {
-          context.go('/success', extra: {
-            'title': 'Top up berhasil',
-            'subtitle': 'Saldo kamu bertambah',
-            'amount': state.amount,
-            'lines': [
-              ['Metode', _methodName()],
-              ['Saldo sekarang', CurrencyFormatter.format(state.balance)],
-            ],
+          final amount = state.amount;
+          final balance = state.balance;
+          final method = _methodName();
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (mounted) {
+              context.go('/success', extra: {
+                'title': 'Top up berhasil',
+                'subtitle': 'Saldo kamu bertambah',
+                'amount': amount,
+                'lines': [
+                  ['Metode', method],
+                  ['Saldo sekarang', CurrencyFormatter.format(balance)],
+                ],
+              });
+            }
           });
         } else if (state is PaymentError) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -93,7 +108,10 @@ class _TopUpPageState extends State<TopUpPage> {
                       children: _chips.map((c) {
                         final selected = _amount == c;
                         return GestureDetector(
-                          onTap: () => setState(() => _amount = c),
+                          onTap: () => setState(() {
+                            _amount = c;
+                            _customController.text = c.toInt().toString();
+                          }),
                           child: AnimatedContainer(
                             duration: const Duration(milliseconds: 150),
                             decoration: BoxDecoration(
@@ -122,6 +140,56 @@ class _TopUpPageState extends State<TopUpPage> {
                           ),
                         );
                       }).toList(),
+                    ),
+                    const SizedBox(height: 14),
+                    TextField(
+                      controller: _customController,
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                      onChanged: (v) {
+                        final parsed = double.tryParse(v) ?? 0;
+                        setState(() => _amount = parsed);
+                      },
+                      decoration: InputDecoration(
+                        prefixText: 'Rp ',
+                        prefixStyle: const TextStyle(
+                          fontFamily: 'PlusJakartaSans',
+                          fontSize: 15,
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.ink,
+                        ),
+                        hintText: 'Ketik nominal lain...',
+                        hintStyle: const TextStyle(
+                          fontFamily: 'PlusJakartaSans',
+                          fontSize: 14,
+                          color: AppColors.slate400,
+                        ),
+                        filled: true,
+                        fillColor: Colors.white,
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 14),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(16),
+                          borderSide:
+                              const BorderSide(color: AppColors.line, width: 1.8),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(16),
+                          borderSide:
+                              const BorderSide(color: AppColors.line, width: 1.8),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(16),
+                          borderSide: const BorderSide(
+                              color: AppColors.primaryLight, width: 1.8),
+                        ),
+                      ),
+                      style: const TextStyle(
+                        fontFamily: 'PlusJakartaSans',
+                        fontSize: 15,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.ink,
+                      ),
                     ),
                     const SizedBox(height: 20),
                     const Padding(
