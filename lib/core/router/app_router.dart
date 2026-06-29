@@ -86,13 +86,14 @@ class AppRouter {
           final location = state.matchedLocation;
           final tab = location.contains('history')
               ? 'history'
-              : location.contains('promo')
-                  ? 'promo'
+              : location.contains('help')
+                  ? 'help'
                   : location.contains('akun')
                       ? 'akun'
                       : 'home';
 
           return _withAccount(Scaffold(
+            extendBody: true,
             body: child,
             bottomNavigationBar: AppTabBar(
               active: tab,
@@ -101,8 +102,8 @@ class AppRouter {
                   case 'history':
                     context.go('/history');
                     break;
-                  case 'promo':
-                    context.go('/promo');
+                  case 'help':
+                    context.go('/help');
                     break;
                   case 'akun':
                     context.go('/akun');
@@ -111,14 +112,17 @@ class AppRouter {
                     context.go('/home');
                 }
               },
-              onScan: () => context.go('/payment'),
             ),
+            floatingActionButton:
+                AppScanFab(onTap: () => context.go('/payment')),
+            floatingActionButtonLocation:
+                FloatingActionButtonLocation.centerDocked,
           ));
         },
         routes: [
           GoRoute(path: '/home', builder: (_, __) => const HomePage()),
           GoRoute(path: '/history', builder: (_, __) => const HistoryPage()),
-          GoRoute(path: '/promo', builder: (_, __) => const PromoPage()),
+          GoRoute(path: '/help', builder: (_, __) => const PromoPage()),
           GoRoute(path: '/akun', builder: (_, __) => const AccountPage()),
         ],
       ),
