@@ -11,6 +11,8 @@ Aplikasi ini tidak hanya berfungsi sebagai alat pembayaran standar, tetapi juga 
 * **Prodi:** Teknik Informatika
 * **Jurusan:** Software Engineer
 
+REPOSITORY E - COMMERCE : https://github.com/DavidDSaputra/UAS_diecast_store
+
 ## Fitur Utama (Core Features)
 
 1. **Manajemen Saldo & Top-up:** Pengguna dapat mengisi saldo dari berbagai bank dan metode pembayaran.
