@@ -48,6 +48,26 @@ Dikembangkan menggunakan bahasa pemrograman Go (Golang) untuk menangani perminta
   * Hashing password dengan Bcrypt.
 * **Layanan Email:** Paket `gomail` digunakan untuk pengiriman email transaksional (seperti resi, verifikasi akun).
 
+## Alur Penggunaan Aplikasi (User Flow)
+
+Secara garis besar, mahasiswa dapat menggunakan aplikasi ini melalui alur berikut:
+
+1. **Pendaftaran & Login:**
+   - Masuk menggunakan akun yang sudah didaftarkan.
+   - Melewati proses verifikasi OTP (One-Time Password) untuk keamanan ganda.
+2. **Penggunaan E-Wallet (Dashboard):**
+   - Setelah berhasil login, mahasiswa akan dialihkan ke Dashboard untuk melihat saldo terkini.
+   - Melakukan pengisian saldo melalui fitur **Top up e-money**.
+   - Mengecek seluruh aktivitas keuangan di halaman **Riwayat e-money**.
+3. **E-Commerce / Toko Diecast:**
+   - Mahasiswa bisa membeli barang dari toko langsung di dalam aplikasi.
+   - Memasukkan produk ke dalam **Keranjang** belanja.
+   - Menyelesaikan proses pembayaran pada halaman **Checkout**.
+   - Memantau status pengiriman di halaman **Pesanan Saya** dan **Detail Pesan**.
+4. **Pengaturan Akun:**
+   - Mengelola profil pada **Halaman Akun**.
+   - Menyesuaikan tampilan aplikasi, seperti mengaktifkan **Tema Gelap**.
+
 ## Demo Aplikasi & Mockup
 
 [![Demo Aplikasi](https://img.youtube.com/vi/I1w_7sJjH0k/maxresdefault.jpg)](https://youtu.be/I1w_7sJjH0k)
