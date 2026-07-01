@@ -1,7 +1,7 @@
 class AppConstants {
   static const String appName = 'Dompet Kampus Global';
   static const String appVersion = '1.0.0';
-  static const String _physicalDeviceBaseUrl = 'http://192.168.110.79:8081';
+  static const String _physicalDeviceBaseUrl = 'http://192.168.18.133:8081';
 
   // API
   static String get baseUrl {

@@ -56,26 +56,24 @@ Link video demo: [https://youtu.be/I1w_7sJjH0k](https://youtu.be/I1w_7sJjH0k)
 
 ### Kumpulan Mockup UI/UX
 
-- **Halaman Login & OTP**
-  ![Halaman Login](assets/images/mockup/halaman%20login.png)
-  ![Tampilan Login e-money](assets/images/mockup/tampilan%20login%20e-money.png)
-  ![Tampilan OTP e-money](assets/images/mockup/tampilan%20OTP%20e-money.png)
+#### Autentikasi & Akun
+| Login | Login e-money | OTP e-money | Akun e-money |
+| :---: | :---: | :---: | :---: |
+| <img src="assets/images/mockup/halaman%20login.png" width="200"> | <img src="assets/images/mockup/tampilan%20login%20e-money.png" width="200"> | <img src="assets/images/mockup/tampilan%20OTP%20e-money.png" width="200"> | <img src="assets/images/mockup/halaman%20akun%20e-money.png" width="200"> |
 
-- **Dashboard & E-money**
-  ![Halaman Dashboard](assets/images/mockup/halaman%20dashbaord.png)
-  ![Halaman Dashboard e-money](assets/images/mockup/halaman%20dashboard%20e-money.png)
-  ![Halaman Top up e-money](assets/images/mockup/halaman%20top%20up%20e-money.png)
-  ![Halaman Riwayat e-money](assets/images/mockup/halaman%20riwayat%20e-money.png)
+#### Dashboard & Transaksi
+| Dashboard | Dashboard e-money | Top up e-money | Riwayat e-money |
+| :---: | :---: | :---: | :---: |
+| <img src="assets/images/mockup/halaman%20dashbaord.png" width="200"> | <img src="assets/images/mockup/halaman%20dashboard%20e-money.png" width="200"> | <img src="assets/images/mockup/halaman%20top%20up%20e-money.png" width="200"> | <img src="assets/images/mockup/halaman%20riwayat%20e-money.png" width="200"> |
 
-- **Store & Keranjang**
-  ![Halaman Keranjang](assets/images/mockup/halaman%20keranjang.png)
-  ![Halaman Checkout](assets/images/mockup/halaman%20checkout.png)
-  ![Halaman Pesanan Saya](assets/images/mockup/halaman%20pesanan%20saya.png)
-  ![Halaman Detail Pesan](assets/images/mockup/halaman%20detail%20pesan.png)
+#### Store & Tema
+| Keranjang | Checkout | Pesanan Saya | Detail Pesan |
+| :---: | :---: | :---: | :---: |
+| <img src="assets/images/mockup/halaman%20keranjang.png" width="200"> | <img src="assets/images/mockup/halaman%20checkout.png" width="200"> | <img src="assets/images/mockup/halaman%20pesanan%20saya.png" width="200"> | <img src="assets/images/mockup/halaman%20detail%20pesan.png" width="200"> |
 
-- **Akun & Tema**
-  ![Halaman Akun e-money](assets/images/mockup/halaman%20akun%20e-money.png)
-  ![Tema Gelap](assets/images/mockup/tema%20gelap.png)
+| Tema Gelap | | | |
+| :---: | :---: | :---: | :---: |
+| <img src="assets/images/mockup/tema%20gelap.png" width="200"> | | | |
 
 ## Prinsip Clean Code & Pola Arsitektur
 
